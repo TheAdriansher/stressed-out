@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>stressed out.</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=IM+Fell+English:ital@0;1&family=Oswald:wght@200;300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #050507;
+  --deep: #0a0a10;
+  --red: #8b0000;
+  --red2: #6b0000;
+  --blood: #3d0000;
+  --white: #d8d0c8;
+  --cream: #b8a898;
+  --grey: #484040;
+  --grey2: #1e1a1a;
+  --gold: #6b5a3a;
+}
+
+@font-face {
+  font-family: 'GothicFallback';
+  src: local('Palatino Linotype'), local('Book Antiqua'), local('Georgia');
+}
+
+html, body {
+  height: 100%;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'IM Fell English', Georgia, serif;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='3' fill='%238b0000'/%3E%3C/svg%3E") 10 10, crosshair;
+}
+
+/* ── TEXTURE OVERLAY ── */
+.texture {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mix-blend-mode: overlay;
+}
+
+/* ── VIGNETTE ── */
+.vignette {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+}
+
+/* ── FLOATING PARTICLES ── */
+#particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+.page {
+  display: none; min-height: 100vh; position: relative; z-index: 2;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 3rem 1.8rem;
+}
+.page.active { display: flex; }
+
+/* ══════════════════════════════ PAGE 1 ══════════════════════════════ */
+#page1 {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,0,0,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(30,0,0,0.4) 0%, transparent 60%),
+    var(--black);
+}
+
+/* Gothic cross top */
+.gothic-cross {
+  margin-bottom: 2.5rem;
+  animation: appear 1.5s ease both;
+  filter: drop-shadow(0 0 8px rgba(139,0,0,0.4));
+}
+
+/* Decorative border frame */
+.frame {
+  position: relative;
+  max-width: 420px; width: 100%;
+  padding: 2.8rem 2.2rem;
+  background: linear-gradient(180deg, rgba(10,8,8,0.95) 0%, rgba(5,5,7,0.98) 100%);
+  border: 1px solid var(--grey);
+  animation: appear 1.5s 0.2s ease both;
+}
+
+/* corner ornaments */
+.frame::before, .frame::after,
+.frame .corner-b-l, .frame .corner-b-r {
+  content: '';
+  position: absolute;
+  width: 28px; height: 28px;
+}
+.frame::before { top: -1px; left: -1px; border-top: 2px solid var(--red); border-left: 2px solid var(--red); }
+.frame::after  { top: -1px; right: -1px; border-top: 2px solid var(--red); border-right: 2px solid var(--red); }
+.frame .corner-b-l { bottom: -1px; left: -1px; border-bottom: 2px solid var(--red); border-left: 2px solid var(--red); }
+.frame .corner-b-r { bottom: -1px; right: -1px; border-bottom: 2px solid var(--red); border-right: 2px solid var(--red); }
+
+/* inner decorative line */
+.ornament-line {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 1.8rem;
+}
+.ornament-line::before, .ornament-line::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--grey), transparent);
+}
+.ornament-line span {
+  font-size: 0.9rem; color: var(--red);
+  line-height: 1;
+}
+
+/* Main heading */
+h1 {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: clamp(2.2rem, 7vw, 3rem);
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  text-shadow:
+    0 0 20px rgba(139,0,0,0.5),
+    0 2px 4px rgba(0,0,0,0.8);
+  letter-spacing: 0.02em;
+}
+h1 em {
+  display: block;
+  font-style: italic;
+  color: var(--red);
+  font-size: 78%;
+  font-family: 'IM Fell English', serif;
+  letter-spacing: 0.05em;
+  margin-top: 0.3rem;
+}
+
+.divider-rune {
+  display: flex; align-items: center; gap: 10px;
+  margin: 1.4rem 0;
+}
+.divider-rune::before, .divider-rune::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--grey2), transparent);
+}
+.divider-rune span { font-size: 0.65rem; color: var(--grey); letter-spacing: 0.2em; font-family: 'Oswald', sans-serif; font-weight: 200; }
+
+/* MCR lyric */
+.lyric {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--cream);
+  line-height: 2;
+  text-align: center;
+  margin-bottom: 1.8rem;
+  padding: 0 0.5rem;
+  opacity: 0.75;
+}
+.lyric span { color: var(--white); opacity: 1; font-style: normal; }
+
+/* Rose SVG separator */
+.rose-sep { margin: 0 auto 1.8rem; display: block; }
+
+/* BUTTONS */
+.btn-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.2rem; position: relative; height: 54px;
+  width: 100%;
+}
+
+.btn-yes {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  background: var(--red);
+  color: var(--white);
+  border: 1px solid var(--red2);
+  padding: 0.6rem 2.2rem 0.5rem;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: background 0.3s, transform 0.15s;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 20px rgba(139,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.btn-yes::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+}
+.btn-yes:hover { background: var(--red2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(139,0,0,0.5); }
+.btn-yes:active { transform: translateY(0); }
+
+.btn-no {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid var(--grey);
+  padding: 0.6rem 2rem 0.5rem;
+  cursor: pointer;
+  position: absolute; right: 0;
+  user-select: none; -webkit-user-select: none;
+  transition: none;
+  box-shadow: none;
+}
+
+.frame-footer {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 1.8rem;
+}
+.frame-footer::before, .frame-footer::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--grey2), transparent);
+}
+.frame-footer span { font-size: 0.58rem; color: var(--grey); letter-spacing: 0.25em; font-family: 'Oswald', sans-serif; font-weight: 200; text-transform: uppercase; white-space: nowrap; }
+
+/* ══════════════════════════════ PAGE 2 ══════════════════════════════ */
+#page2 {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(139,0,0,0.08) 0%, transparent 70%),
+    var(--black);
+  align-items: stretch;
+}
+.p2-inner { max-width: 460px; width: 100%; margin: 0 auto; padding: 2rem 0; }
+
+.p2-header {
+  text-align: center; margin-bottom: 2rem;
+  animation: appear 0.8s ease both;
+}
+.p2-header h2 {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 2rem; color: var(--white);
+  text-shadow: 0 0 20px rgba(139,0,0,0.4);
+  margin-bottom: 0.3rem;
+}
+.p2-header p { font-size: 0.72rem; color: var(--grey); letter-spacing: 0.3em; font-family: 'Oswald', sans-serif; font-weight: 200; text-transform: uppercase; }
+
+.s-label {
+  font-family: 'Oswald', sans-serif; font-weight: 200;
+  font-size: 0.55rem; letter-spacing: 0.45em; color: var(--red);
+  text-transform: uppercase; margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.s-label::after { content: '✦'; color: var(--blood); font-size: 0.5rem; margin-right: 4px; }
+.s-label::before { content: ''; flex: 0; }
+
+.dark-card {
+  background: rgba(8,6,6,0.95);
+  border: 1px solid var(--grey2);
+  border-top: 1px solid var(--grey);
+  padding: 1.3rem; margin-bottom: 1rem;
+  position: relative;
+  animation: appear 0.8s ease both;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+.dark-card:nth-child(3){ animation-delay:0.1s; }
+.dark-card:nth-child(5){ animation-delay:0.2s; }
+
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.cal-nav button {
+  background: none; border: 1px solid var(--grey2);
+  font-size: 0.72rem; cursor: pointer; color: var(--cream);
+  padding: 5px 12px; font-family: 'Oswald', sans-serif;
+  font-weight: 200; letter-spacing: 0.15em;
+  text-transform: uppercase; transition: border-color 0.2s, color 0.2s;
+}
+.cal-nav button:hover { border-color: var(--red); color: var(--red); }
+.cal-nav button:disabled { opacity: 0.2; cursor: not-allowed; }
+.cal-month-label {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 1.1rem; color: var(--white);
+  text-shadow: 0 0 10px rgba(139,0,0,0.3);
+}
+
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-day-name {
+  text-align: center; font-size: 0.52rem; color: var(--grey);
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 0 10px;
+  font-family: 'Oswald', sans-serif; font-weight: 200;
+}
+.cal-cell {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; cursor: pointer; transition: all 0.12s;
+  color: var(--cream); font-family: 'IM Fell English', serif;
+}
+.cal-cell:hover:not(.disabled):not(.empty) { color: var(--red); transform: scale(1.15); text-shadow: 0 0 8px rgba(139,0,0,0.6); }
+.cal-cell.selected {
+  background: var(--red); color: var(--white); font-weight: bold;
+  transform: scale(1.12); box-shadow: 0 0 14px rgba(139,0,0,0.5);
+}
+.cal-cell.disabled { color: var(--grey2); cursor: not-allowed; pointer-events: none; }
+.cal-cell.empty { pointer-events: none; }
+
+.time-slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.time-slot {
+  border: 1px solid var(--grey2); padding: 8px 2px; text-align: center;
+  font-size: 0.65rem; cursor: pointer; transition: all 0.15s; color: var(--grey);
+  font-family: 'Oswald', sans-serif; font-weight: 200; letter-spacing: 0.04em;
+  background: transparent;
+}
+.time-slot:hover { border-color: var(--red); color: var(--red); background: rgba(139,0,0,0.06); }
+.time-slot.selected { border-color: var(--red); background: rgba(139,0,0,0.2); color: var(--white); }
+
+.btn-confirm {
+  width: 100%;
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 1.3rem; letter-spacing: 0.1em;
+  background: transparent; border: 1px solid var(--red);
+  color: var(--red); padding: 0.7rem 1rem 0.6rem;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: color 0.3s;
+  animation: appear 0.8s 0.3s ease both;
+  box-shadow: 0 0 20px rgba(139,0,0,0.1);
+}
+.btn-confirm::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--red); transform: translateY(101%);
+  transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+}
+.btn-confirm:hover::before { transform: translateY(0); }
+.btn-confirm:hover { color: var(--white); }
+.btn-confirm span { position: relative; z-index: 1; }
+
+/* ══════════════════════════════ PAGE 3 ══════════════════════════════ */
+#page3 {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(139,0,0,0.1) 0%, transparent 70%),
+    var(--black);
+}
+
+.end-wrap { max-width: 400px; width: 100%; text-align: center; animation: appear 1s ease both; }
+
+.end-cross {
+  margin: 0 auto 1.8rem;
+  filter: drop-shadow(0 0 12px rgba(139,0,0,0.5));
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%,100% { filter: drop-shadow(0 0 8px rgba(139,0,0,0.4)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(139,0,0,0.7)); }
+}
+
+.end-title {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 2.4rem; color: var(--white);
+  text-shadow: 0 0 30px rgba(139,0,0,0.5);
+  margin-bottom: 0.6rem;
+}
+
+.end-lyric {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: 0.85rem; color: var(--cream);
+  line-height: 2; margin-bottom: 1.6rem;
+  border-top: 1px solid var(--grey2); border-bottom: 1px solid var(--grey2);
+  padding: 0.8rem 0;
+}
+
+.confirm-box {
+  border: 1px solid var(--grey2);
+  background: rgba(8,6,6,0.95);
+  padding: 1.1rem 1.4rem; margin-bottom: 1.2rem;
+  text-align: left; position: relative;
+}
+.confirm-box::before, .confirm-box::after {
+  content: '✦';
+  position: absolute; font-size: 0.5rem; color: var(--red);
+}
+.confirm-box::before { top: 6px; left: 8px; }
+.confirm-box::after  { bottom: 6px; right: 8px; }
+.confirm-box p {
+  font-size: 0.8rem; letter-spacing: 0.08em; color: var(--cream);
+  line-height: 2.4; font-family: 'IM Fell English', serif;
+}
+.confirm-box strong { color: var(--red); font-weight: normal; }
+
+.end-tag {
+  font-family: 'Oswald', sans-serif; font-weight: 200;
+  font-size: 0.55rem; letter-spacing: 0.4em; color: var(--grey);
+  text-transform: uppercase;
+}
+
+/* ── MUSIC BTN ── */
+.music-btn {
+  position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 50;
+  background: rgba(5,5,7,0.95); border: 1px solid var(--grey);
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; cursor: pointer; color: var(--grey);
+  font-family: 'Oswald', sans-serif; font-weight: 200;
+  transition: border-color 0.2s, color 0.2s;
+}
+.music-btn:hover { border-color: var(--red); color: var(--red); }
+.music-btn.playing { border-color: var(--red); color: var(--red); box-shadow: 0 0 10px rgba(139,0,0,0.3); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--deep); color: var(--cream); border: 1px solid var(--grey);
+  padding: 0.6rem 1.2rem; font-size: 0.68rem; letter-spacing: 0.2em;
+  font-family: 'Oswald', sans-serif; font-weight: 200; text-transform: uppercase;
+  transition: transform 0.35s cubic-bezier(.22,1,.36,1); z-index: 100; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes appear {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="texture"></div>
+<div class="vignette"></div>
+<canvas id="particles"></canvas>
+
+<audio id="bgMusic" loop>
+  <source src="the world is ugly.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ═══════════════════════ PAGE 1 ═══════════════════════ -->
+<div class="page active" id="page1">
+
+  <!-- Gothic cross -->
+  <svg class="gothic-cross" width="44" height="56" viewBox="0 0 44 56" fill="none">
+    <rect x="18" y="0" width="8" height="56" fill="#8b0000" rx="1"/>
+    <rect x="0" y="14" width="44" height="8" fill="#8b0000" rx="1"/>
+    <rect x="19" y="1" width="6" height="54" fill="rgba(255,255,255,0.04)" rx="1"/>
+    <rect x="1" y="15" width="42" height="6" fill="rgba(255,255,255,0.04)" rx="1"/>
+    <!-- gem -->
+    <polygon points="22,20 25,22 22,24 19,22" fill="#6b0000"/>
+    <polygon points="22,20 25,22 22,22" fill="rgba(255,255,255,0.1)"/>
+  </svg>
+
+  <div class="frame">
+    <div class="corner-b-l"></div>
+    <div class="corner-b-r"></div>
+
+    <div class="ornament-line">
+      <span>✦</span>
+    </div>
+
+    <h1>
+      ¿Quieres<br>salir conmigo?
+      <em>"the world is ugly — but so are we"</em>
+    </h1>
+
+    <div class="divider-rune">
+      <span>⸸ &nbsp; memento mori &nbsp; ⸸</span>
+    </div>
+
+    <p class="lyric">
+      We can leave this world, leave it all behind<br>
+      We can steal this car if your folks don't mind<br>
+      <span>We can live forever if you've got the time</span>
+    </p>
+
+    <!-- gothic rose separator -->
+    <svg class="rose-sep" width="80" height="24" viewBox="0 0 80 24" fill="none">
+      <line x1="0" y1="12" x2="28" y2="12" stroke="#2a2a2a" stroke-width="1"/>
+      <line x1="52" y1="12" x2="80" y2="12" stroke="#2a2a2a" stroke-width="1"/>
+      <!-- rose shape -->
+      <circle cx="40" cy="12" r="6" fill="none" stroke="#8b0000" stroke-width="1"/>
+      <circle cx="40" cy="12" r="3" fill="#8b0000"/>
+      <circle cx="40" cy="12" r="1.2" fill="#6b0000"/>
+      <!-- petals -->
+      <ellipse cx="40" cy="5" rx="2.5" ry="4" fill="#8b0000" opacity="0.7"/>
+      <ellipse cx="40" cy="19" rx="2.5" ry="4" fill="#8b0000" opacity="0.7"/>
+      <ellipse cx="33" cy="12" rx="4" ry="2.5" fill="#8b0000" opacity="0.7"/>
+      <ellipse cx="47" cy="12" rx="4" ry="2.5" fill="#8b0000" opacity="0.7"/>
+    </svg>
+
+    <div class="btn-row" id="btnRow">
+      <button class="btn-yes" onclick="goToPage2()">Sí</button>
+      <button class="btn-no" id="btnNo">No</button>
+    </div>
+
+    <div class="frame-footer">
+      <span>ambas respuestas fueron consideradas</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════ PAGE 2 ═══════════════════════ -->
+<div class="page" id="page2">
+  <div class="p2-inner">
+
+    <div class="p2-header">
+      <h2>Elige el Momento</h2>
+      <p>día &amp; hora — sin más</p>
+    </div>
+
+    <p class="s-label">fecha</p>
+    <div class="dark-card">
+      <div class="cal-nav">
+        <button id="prevBtn" onclick="prevMonth()">◂ anterior</button>
+        <span class="cal-month-label" id="monthLabel"></span>
+        <button id="nextBtn" onclick="nextMonth()">siguiente ▸</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <p class="s-label" style="margin-top:0.3rem">hora</p>
+    <div class="dark-card">
+      <div class="time-slots">
+        <div class="time-slot" onclick="selectTime(this,'10:00')">10 am</div>
+        <div class="time-slot" onclick="selectTime(this,'11:00')">11 am</div>
+        <div class="time-slot" onclick="selectTime(this,'12:00')">12 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'13:00')">1 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'14:00')">2 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'15:00')">3 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'17:00')">5 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'18:00')">6 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'19:00')">7 pm</div>
+        <div class="time-slot" onclick="selectTime(this,'20:00')">8 pm</div>
+      </div>
+    </div>
+
+    <button class="btn-confirm" onclick="confirmDate()">
+      <span>Confirmar</span>
+    </button>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════ PAGE 3 ═══════════════════════ -->
+<div class="page" id="page3">
+  <div class="end-wrap">
+
+    <!-- pulsing cross -->
+    <svg class="end-cross" width="52" height="66" viewBox="0 0 52 66" fill="none">
+      <rect x="22" y="0" width="8" height="66" fill="#8b0000" rx="1"/>
+      <rect x="0" y="16" width="52" height="8" fill="#8b0000" rx="1"/>
+      <polygon points="26,24 30,26 26,28 22,26" fill="#6b0000"/>
+    </svg>
+
+    <h2 class="end-title">Confirmado.</h2>
+
+    <p class="end-lyric">
+      We can live forever if you've got the time.
+    </p>
+
+    <div class="confirm-box">
+      <p id="confirmDetails"></p>
+    </div>
+
+    <p class="end-tag">⸸ transmisión recibida ⸸</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()">▶</button>
+
+<script>
+// ── CONFIG ──
+const EMAILJS_PUBLIC_KEY  = 'kLaCYVsshdp_sckQz';
+const EMAILJS_SERVICE_ID  = 'service_rb6busu';
+const EMAILJS_TEMPLATE_ID = 'template_belqzhx';
+const MY_EMAIL = 'angeladrian.lv@gmail.com';
+const MY_PHONE = '4421313434';
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ── PARTICLES (floating ash) ──
+(function() {
+  const canvas = document.getElementById('particles');
+  const ctx    = canvas.getContext('2d');
+  let W, H, pts = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    pts = Array.from({ length: 35 }, () => mkPt());
+  }
+  function mkPt() {
+    return {
+      x: Math.random() * (W||300),
+      y: (H||600) + Math.random() * 60,
+      r: 0.8 + Math.random() * 1.6,
+      speed: 0.3 + Math.random() * 0.7,
+      drift: (Math.random() - 0.5) * 0.4,
+      opacity: 0.1 + Math.random() * 0.35,
+      wobble: Math.random() * Math.PI * 2,
+    };
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pts.forEach(p => {
+      p.wobble += 0.015;
+      p.x += Math.sin(p.wobble) * 0.3 + p.drift;
+      p.y -= p.speed;
+      if (p.y < -10) { Object.assign(p, mkPt(), { y: H + 10 }); }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139,0,0,${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── NO BUTTON DODGE ──
+const btnNo  = document.getElementById('btnNo');
+const btnRow = document.getElementById('btnRow');
+function dodgeNo() {
+  const maxX = btnRow.offsetWidth - btnNo.offsetWidth - 10;
+  const rx   = (Math.random() * (maxX + 80)) - 40;
+  const ry   = Math.random() > 0.5 ? -(40 + Math.random() * 60) : (40 + Math.random() * 60);
+  btnNo.style.transition = 'transform 0.18s cubic-bezier(.22,1,.36,1)';
+  btnNo.style.transform  = `translate(${rx - maxX / 2}px, ${ry}px)`;
+  setTimeout(() => { btnNo.style.transition = 'none'; }, 200);
+}
+btnNo.addEventListener('mouseenter', dodgeNo);
+btnNo.addEventListener('touchstart', dodgeNo, { passive: true });
+btnNo.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); dodgeNo(); });
+
+// ── MUSIC ──
+const music    = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+let musicStarted = false;
+function startMusic() {
+  if (!musicStarted) {
+    music.volume = 0.4;
+    music.play()
+      .then(() => { musicStarted = true; musicBtn.textContent = '■'; musicBtn.classList.add('playing'); })
+      .catch(() => {});
+  }
+}
+function toggleMusic() {
+  if (music.paused) { music.play(); musicBtn.textContent = '■'; musicBtn.classList.add('playing'); }
+  else              { music.pause(); musicBtn.textContent = '▶'; musicBtn.classList.remove('playing'); }
+}
+
+// ── NAV ──
+function goToPage2() {
+  startMusic();
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showPage3() {
+  document.getElementById('page2').classList.remove('active');
+  document.getElementById('page3').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── CALENDAR ──
+const MIN_DATE   = new Date(2026, 5, 1);
+let viewYear     = 2026, viewMonth = 5;
+let selectedDate = null, selectedTime = null;
+const dayNames   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function renderCal() {
+  document.getElementById('monthLabel').textContent = `${monthNames[viewMonth]} ${viewYear}`;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  dayNames.forEach(d => { const el = document.createElement('div'); el.className = 'cal-day-name'; el.textContent = d; grid.appendChild(el); });
+  const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  for (let i = 0; i < firstDay; i++) { const el = document.createElement('div'); el.className = 'cal-cell empty'; grid.appendChild(el); }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(viewYear, viewMonth, d);
+    const el   = document.createElement('div'); el.className = 'cal-cell'; el.textContent = d;
+    if (date < MIN_DATE) { el.classList.add('disabled'); }
+    else { el.onclick = () => selectDay(el, d); if (selectedDate && date.toDateString() === selectedDate.toDateString()) el.classList.add('selected'); }
+    grid.appendChild(el);
+  }
+  document.getElementById('prevBtn').disabled = (viewYear === MIN_DATE.getFullYear() && viewMonth <= MIN_DATE.getMonth());
+}
+function prevMonth() { if (viewYear===MIN_DATE.getFullYear()&&viewMonth<=MIN_DATE.getMonth()) return; viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderCal(); }
+function nextMonth() { viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderCal(); }
+function selectDay(el, d) { document.querySelectorAll('.cal-cell.selected').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedDate = new Date(viewYear, viewMonth, d); }
+renderCal();
+
+// ── TIME ──
+function selectTime(el, t) { document.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected')); el.classList.add('selected'); selectedTime = t; }
+
+// ── TOAST ──
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+// ── CONFIRM ──
+function confirmDate() {
+  if (!selectedDate) { showToast('⸸ elige un día ⸸'); return; }
+  if (!selectedTime) { showToast('⸸ elige una hora ⸸'); return; }
+  const dateStr = selectedDate.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const [h]     = selectedTime.split(':');
+  const hour    = parseInt(h);
+  const timeStr = `${hour > 12 ? hour - 12 : hour}:00 ${hour >= 12 ? 'pm' : 'am'}`;
+  document.getElementById('confirmDetails').innerHTML = `<strong>fecha //</strong> ${dateStr}<br><strong>hora &nbsp;//</strong> ${timeStr}`;
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { to_email: MY_EMAIL, reply_to: MY_EMAIL, date: dateStr, time: timeStr, phone: MY_PHONE }).catch(err => console.warn(err));
+  showPage3();
+}
+</script>
+</body>
+</html>
